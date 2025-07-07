@@ -132,7 +132,137 @@ export class MemStorage implements IStorage {
       this.establishments.set(this.currentId, { 
         ...establishment, 
         id: this.currentId,
-        createdAt: new Date()
+        createdAt: new Date(),
+        status: establishment.status || "active",
+        phone: establishment.phone || null,
+        email: establishment.email || null,
+        imageUrl: establishment.imageUrl || null
+      });
+      this.currentId++;
+    });
+
+    // Seed products
+    const defaultProducts: InsertProduct[] = [
+      {
+        name: "Banana Prata",
+        description: "Banana prata fresca e doce",
+        price: "8.90",
+        unit: "kg",
+        categoryId: 1,
+        establishmentId: 7,
+        imageUrl: "https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=300&h=200&fit=crop&crop=center",
+        inStock: true,
+      },
+      {
+        name: "Maçã Gala",
+        description: "Maçã gala vermelha e crocante",
+        price: "12.50",
+        unit: "kg",
+        categoryId: 1,
+        establishmentId: 7,
+        imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&h=200&fit=crop&crop=center",
+        inStock: true,
+      },
+      {
+        name: "Picanha Premium",
+        description: "Picanha bovina de primeira qualidade",
+        price: "89.90",
+        unit: "kg",
+        categoryId: 3,
+        establishmentId: 8,
+        imageUrl: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop&crop=center",
+        inStock: true,
+      },
+      {
+        name: "Alcatra",
+        description: "Alcatra bovina macia",
+        price: "65.90",
+        unit: "kg",
+        categoryId: 3,
+        establishmentId: 8,
+        imageUrl: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=300&h=200&fit=crop&crop=center",
+        inStock: true,
+      },
+      {
+        name: "Alface Americana",
+        description: "Alface americana fresquinha",
+        price: "4.50",
+        unit: "unit",
+        categoryId: 2,
+        establishmentId: 9,
+        imageUrl: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=300&h=200&fit=crop&crop=center",
+        inStock: true,
+      },
+      {
+        name: "Tomate Cereja",
+        description: "Tomate cereja doce",
+        price: "14.90",
+        unit: "kg",
+        categoryId: 2,
+        establishmentId: 9,
+        imageUrl: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&h=200&fit=crop&crop=center",
+        inStock: true,
+      }
+    ];
+
+    defaultProducts.forEach(product => {
+      this.products.set(this.currentId, {
+        ...product,
+        id: this.currentId,
+        createdAt: new Date(),
+        description: product.description || null,
+        inStock: product.inStock ?? true,
+        imageUrl: product.imageUrl || null,
+        categoryId: product.categoryId || null
+      });
+      this.currentId++;
+    });
+
+    // Seed offers
+    const defaultOffers: InsertOffer[] = [
+      {
+        title: "30% OFF em Frutas",
+        description: "Desconto especial em todas as frutas da temporada",
+        discountPercentage: "30.00",
+        establishmentId: 7,
+        categoryId: 1,
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+        isActive: true,
+      },
+      {
+        title: "Picanha em Promoção",
+        description: "Picanha premium com preço especial",
+        discountAmount: "15.00",
+        establishmentId: 8,
+        categoryId: 3,
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 dias
+        isActive: true,
+      },
+      {
+        title: "Verduras Frescas",
+        description: "20% de desconto em verduras selecionadas",
+        discountPercentage: "20.00",
+        establishmentId: 9,
+        categoryId: 2,
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 dias
+        isActive: true,
+      }
+    ];
+
+    defaultOffers.forEach(offer => {
+      this.offers.set(this.currentId, {
+        ...offer,
+        id: this.currentId,
+        createdAt: new Date(),
+        description: offer.description || null,
+        isActive: offer.isActive ?? true,
+        categoryId: offer.categoryId || null,
+        productId: offer.productId || null,
+        discountPercentage: offer.discountPercentage || null,
+        discountAmount: offer.discountAmount || null
       });
       this.currentId++;
     });
@@ -153,6 +283,10 @@ export class MemStorage implements IStorage {
       ...establishment,
       id,
       createdAt: new Date(),
+      status: establishment.status || "active",
+      phone: establishment.phone || null,
+      email: establishment.email || null,
+      imageUrl: establishment.imageUrl || null
     };
     this.establishments.set(id, newEstablishment);
     return newEstablishment;
@@ -206,6 +340,10 @@ export class MemStorage implements IStorage {
       ...product,
       id,
       createdAt: new Date(),
+      description: product.description || null,
+      inStock: product.inStock ?? true,
+      imageUrl: product.imageUrl || null,
+      categoryId: product.categoryId || null
     };
     this.products.set(id, newProduct);
     return newProduct;
@@ -243,6 +381,12 @@ export class MemStorage implements IStorage {
       ...offer,
       id,
       createdAt: new Date(),
+      description: offer.description || null,
+      isActive: offer.isActive ?? true,
+      categoryId: offer.categoryId || null,
+      productId: offer.productId || null,
+      discountPercentage: offer.discountPercentage || null,
+      discountAmount: offer.discountAmount || null
     };
     this.offers.set(id, newOffer);
     return newOffer;
@@ -291,11 +435,13 @@ export class MemStorage implements IStorage {
   }
 
   async clearCart(sessionId: string): Promise<void> {
-    for (const [id, cart] of this.carts.entries()) {
+    const cartsToDelete: number[] = [];
+    this.carts.forEach((cart, id) => {
       if (cart.sessionId === sessionId) {
-        this.carts.delete(id);
+        cartsToDelete.push(id);
       }
-    }
+    });
+    cartsToDelete.forEach(id => this.carts.delete(id));
   }
 
   // Orders
@@ -313,6 +459,7 @@ export class MemStorage implements IStorage {
       ...order,
       id,
       createdAt: new Date(),
+      status: order.status || "pending"
     };
     this.orders.set(id, newOrder);
     return newOrder;

@@ -110,8 +110,19 @@ This is a full-stack web application for managing a grocery store network. The a
 ## Changelog
 
 Changelog:
-- July 07, 2025. Initial setup
+- July 07, 2025. Initial setup - Created full grocery store management platform
+- July 07, 2025. Enhanced customer view - Modified customer interface to show establishments first, then products and offers per establishment
+
+## Recent Changes
+
+✓ Fixed TypeScript errors in storage layer
+✓ Added sample products and offers to demonstrate functionality  
+✓ Redesigned customer view as establishment-first web app
+✓ Added establishment selection flow with product filtering
+✓ Implemented establishment-specific offers display
+→ Ready for testing and deployment
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+User requested: Customer web app should display establishments first, then show products and offers for selected establishment.
