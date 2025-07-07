@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,23 +20,35 @@ function Router() {
       <Route path="/products" component={Products} />
       <Route path="/offers" component={Offers} />
       <Route path="/customer-view" component={CustomerView} />
+      <Route path="/loja" component={CustomerView} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
+  const [location] = useLocation();
+  const isCustomerView = location === "/customer-view" || location === "/loja";
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <div className="min-h-screen flex bg-gray-50">
-          <Sidebar />
-          <div className="flex-1 ml-64">
-            <Header />
+        {isCustomerView ? (
+          // Layout for customer view (no sidebar/header)
+          <div className="min-h-screen bg-gray-50">
             <Router />
           </div>
-        </div>
+        ) : (
+          // Layout for admin pages (with sidebar/header)
+          <div className="min-h-screen flex bg-gray-50">
+            <Sidebar />
+            <div className="flex-1 ml-64">
+              <Header />
+              <Router />
+            </div>
+          </div>
+        )}
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -20,33 +20,33 @@ export default function ProductCard({
   isCustomerView = false 
 }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200 active:scale-95">
       {product.imageUrl && (
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="w-full h-48 object-cover"
+          className="w-full h-32 sm:h-48 object-cover"
         />
       )}
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-gray-800 mb-2">{product.name}</h3>
+      <CardContent className="p-3 sm:p-4">
+        <h3 className="font-semibold text-sm sm:text-base text-gray-800 mb-1 sm:mb-2 line-clamp-2">{product.name}</h3>
         {product.description && (
-          <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+          <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2 hidden sm:block">{product.description}</p>
         )}
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-lg font-bold text-primary">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-2 sm:mb-0">
+            <span className="text-base sm:text-lg font-bold text-primary">
               R$ {parseFloat(product.price).toFixed(2)}
             </span>
-            <span className="text-sm text-gray-500">/{product.unit}</span>
+            <span className="text-xs sm:text-sm text-gray-500">/{product.unit}</span>
           </div>
           {isCustomerView ? (
             <Button 
               size="sm" 
               onClick={() => onAddToCart?.(product)}
-              className="bg-primary hover:bg-primary-dark"
+              className="bg-primary hover:bg-primary-dark w-full sm:w-auto text-xs sm:text-sm py-2"
             >
-              <ShoppingCart className="w-4 h-4 mr-2" />
+              <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Adicionar
             </Button>
           ) : (
