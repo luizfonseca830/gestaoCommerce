@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, ShoppingCart, X, CreditCard, Smartphone, Banknote, ArrowLeft, Store, MapPin, Phone, Mail } from "lucide-react";
+import { Search, ShoppingCart, X, CreditCard, Smartphone, Banknote, ArrowLeft, Store, MapPin, Phone, Mail, Settings } from "lucide-react";
 import { useState } from "react";
 import ProductCard from "@/components/products/product-card";
 import OfferCard from "@/components/offers/offer-card";
@@ -11,10 +11,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { type Product, type Category, type Cart, type Establishment, type Offer } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 export default function CustomerView() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [showCart, setShowCart] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
@@ -148,6 +150,10 @@ export default function CustomerView() {
     setSearchTerm("");
   };
 
+  const handleAdminLogin = () => {
+    setLocation("/");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 touch-action-pan-y">
       {/* Header */}
@@ -179,21 +185,32 @@ export default function CustomerView() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              {selectedEstablishment && (
+              <div className="flex items-center space-x-2">
+                {selectedEstablishment && (
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="relative"
+                    onClick={() => setShowCart(true)}
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {cart && cart.length > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-danger text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {cart.length}
+                      </span>
+                    )}
+                  </Button>
+                )}
                 <Button 
-                  variant="outline" 
-                  size="icon" 
-                  className="relative"
-                  onClick={() => setShowCart(true)}
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleAdminLogin}
+                  className="text-xs sm:text-sm"
                 >
-                  <ShoppingCart className="w-5 h-5" />
-                  {cart && cart.length > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-danger text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {cart.length}
-                    </span>
-                  )}
+                  <Settings className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Admin</span>
                 </Button>
-              )}
+              </div>
             </div>
           </div>
           {/* Mobile Search Bar */}
