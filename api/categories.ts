@@ -1,15 +1,13 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
-import { storage } from '../server/storage';
+import type { Express, Request, Response } from "express";
+import { storage } from "../server/storage";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-    try {
-        if (req.method === 'GET') {
+export default async function categories(app: Express) {
+    app.get("/api/categories", async (_req: Request, res: Response) => {
+        try {
             const categories = await storage.getCategories();
             return res.status(200).json(categories);
+        } catch (error) {
+            return res.status(500).json({ message: "Failed to fetch categories" });
         }
-
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    } catch (error) {
-        return res.status(500).json({ message: 'Failed to fetch categories' });
-    }
+    });
 }
